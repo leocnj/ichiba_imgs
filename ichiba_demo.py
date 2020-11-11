@@ -61,12 +61,17 @@ if st.checkbox("Show raw data"):
 
 st.subheader("Choose one product to show")
 
-translator = Translator()
+@st.cache
+def gen_trans(t_):
+    translator = Translator()
+    t_zh = translator.translate(t_, dest="zh-CN").text
+    t_en = translator.translate(t_, dest="en").text
+    return t_zh, t_en
+
 item_idx = st.slider("item_idx", 0, 999, 10)
 item_data = data.iloc[item_idx, :]
 t_, l_ = item_data["title"], item_data["label"]
-t_zh = translator.translate(t_, dest="zh-CN").text
-t_en = translator.translate(t_, dest="en").text
+t_zh, t_en = gen_trans(t_)
 
 st.markdown(f'- *Title*:{t_}\n- *中文*:{t_zh}\n- *English*:{t_en}\n- *Label*:{labels[l_]}')
 st.image(item_data["image_url"], width=None)
